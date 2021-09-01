@@ -1,0 +1,21 @@
+import requests
+from getcredits import get_credits
+
+response = requests.get("https://api.themoviedb.org/3/movie/popular?api_key=67a6e1aeb9867e7d066045334c59e0a9&language=en-US&page=1")
+
+movies_fetched = response.json()
+
+# prazna lista u koju će se spremati podatci o filmovima
+movies = []
+
+for movie_fetched in movies_fetched["results"]:
+    movie = {}
+    movie['moviedb_id'] = movie_fetched["id"]
+    movie['original_title'] = movie_fetched["original_title"]
+    movie['release_date'] = movie_fetched["release_date"]
+    allcredits = get_credits(movie['moviedb_id'])
+    movie['director'] = allcredits["director"]
+    movie['cast'] = allcredits["cast"]
+    movies.append(movie) 
+
+print(movies)
