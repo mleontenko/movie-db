@@ -1,6 +1,6 @@
 import requests
-from getcredits import get_credits
+from getgenres import get_genres
 
-glumci = get_credits(436969)
+zanrovi = get_genres(436969)
 
-print(glumci)
+print(zanrovi)
