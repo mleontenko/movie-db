@@ -1,6 +1,8 @@
 import requests
+import json
 from getcredits import get_credits
 from getgenres import get_genres
+from getreviews import get_reviews
 
 response = requests.get("https://api.themoviedb.org/3/movie/popular?api_key=67a6e1aeb9867e7d066045334c59e0a9&language=en-US&page=1")
 
@@ -18,6 +20,10 @@ for movie_fetched in movies_fetched["results"]:
     movie['director'] = allcredits["director"]
     movie['cast'] = allcredits["cast"]
     movie['genres'] = get_genres(movie['moviedb_id'])
+    movie['reviews'] = get_reviews(movie['moviedb_id'])
     movies.append(movie) 
 
 print(movies)
+
+with open('output.txt', 'w') as json_file:
+  json.dump(movies, json_file)

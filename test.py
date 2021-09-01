@@ -1,6 +1,6 @@
 import requests
-from getgenres import get_genres
+from getreviews import get_reviews
 
-zanrovi = get_genres(436969)
+reviews = get_reviews(436969)
 
-print(zanrovi)
+print(reviews)
