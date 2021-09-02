@@ -1,5 +1,6 @@
 import requests
 import json
+import psycopg2
 from getcredits import get_credits
 from getgenres import get_genres
 from getreviews import get_reviews
@@ -33,7 +34,44 @@ for movie_fetched in movies_fetched["results"]:
         movie['scores'].append(score["compound"])        
     movies.append(movie) 
 
-print(movies)
+#print(movies)
 
+
+# ispis u txt datoteku
 with open('output.txt', 'w') as json_file:
   json.dump(movies, json_file)
+
+
+# spremanje u bazu podataka
+conn = psycopg2.connect(
+        host="localhost",
+        database="moviedb",
+        user="root",
+        password="root",
+        port=5432)
+
+dbCursor = conn.cursor()
+
+for movie in movies:
+
+    moviedb_id = movie["moviedb_id"]
+    original_title =movie["original_title"]
+    release_date = movie["release_date"]
+    director = movie["director"]
+    # escape za navodnik (dogodio se slucaj da redatlj ima navodnik u imenu npr. Ettore D'Alessandro)
+    director = director.replace("'", "''")
+    cast = movie["cast"]
+    genres = movie["genres"]
+    reviews = movie["reviews"]
+    scores = movie["scores"]
+
+    movieinsert = f"INSERT INTO public.movies(moviedb_id, original_title, release_date, director) VALUES ({moviedb_id}, '{original_title}', '{release_date}', '{director}') RETURNING id;"
+    #print(movieinsert)
+    dbCursor.execute(movieinsert)
+    movies_id = dbCursor.fetchone()[0]
+    #print(movies_id)
+    conn.commit()
+    
+
+
+conn.close()
