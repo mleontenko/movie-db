@@ -69,6 +69,11 @@ for movie in movies:
     #print(movieinsert)
     dbCursor.execute(movieinsert)
     movies_id = dbCursor.fetchone()[0]
+    for actor in cast:
+        # escape za navodnik (dogodio se slucaj da glumac ima navodnik u imenu npr. Katy O'Brian)
+        actor_clean = actor.replace("'", "''")
+        actorinsert = f"INSERT INTO public.actors(movie_id, name) VALUES ({movies_id}, '{actor_clean}');"
+        dbCursor.execute(actorinsert)
     #print(movies_id)
     conn.commit()
     
