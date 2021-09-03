@@ -74,9 +74,10 @@ for movie in movies:
         actor_clean = actor.replace("'", "''")
         actorinsert = f"INSERT INTO public.actors(movie_id, name) VALUES ({movies_id}, '{actor_clean}');"
         dbCursor.execute(actorinsert)
+    for genre in genres:
+        genreinsert = f"INSERT INTO public.genres(movie_id, name) VALUES ({movies_id}, '{genre}');"
+        dbCursor.execute(genreinsert)
     #print(movies_id)
     conn.commit()
-    
-
 
 conn.close()
