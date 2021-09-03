@@ -77,6 +77,10 @@ for movie in movies:
     for genre in genres:
         genreinsert = f"INSERT INTO public.genres(movie_id, name) VALUES ({movies_id}, '{genre}');"
         dbCursor.execute(genreinsert)
+    for index, review in enumerate(reviews):
+        review = review.replace("'", "''")
+        reviewinsert = f"INSERT INTO public.reviews(movie_id, review, compound) VALUES ({movies_id}, '{review}', '{scores[index]}');"
+        dbCursor.execute(reviewinsert)        
     #print(movies_id)
     conn.commit()
 
