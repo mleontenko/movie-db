@@ -12,11 +12,11 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 sid = SentimentIntensityAnalyzer()
 
 # DB parameters
-host="localhost"
+host="pg_container_test"
 database="moviedb"
 user="root"
 password="root"
-port=6543
+port=5432
 
 response = requests.get("https://api.themoviedb.org/3/movie/popular?api_key=67a6e1aeb9867e7d066045334c59e0a9&language=en-US&page=1")
 
