@@ -48,7 +48,7 @@ conn = psycopg2.connect(
         database="moviedb",
         user="root",
         password="root",
-        port=5432)
+        port=6543)
 
 dbCursor = conn.cursor()
 
@@ -56,6 +56,8 @@ for movie in movies:
 
     moviedb_id = movie["moviedb_id"]
     original_title =movie["original_title"]
+    # escape za navodnik
+    original_title = original_title.replace("'", "''")
     release_date = movie["release_date"]
     director = movie["director"]
     # escape za navodnik (dogodio se slucaj da redatlj ima navodnik u imenu npr. Ettore D'Alessandro)
@@ -75,6 +77,8 @@ for movie in movies:
         actorinsert = f"INSERT INTO public.actors(movie_id, name) VALUES ({movies_id}, '{actor_clean}');"
         dbCursor.execute(actorinsert)
     for genre in genres:
+        # escape za navodnik
+        genre = genre.replace("'", "''")
         genreinsert = f"INSERT INTO public.genres(movie_id, name) VALUES ({movies_id}, '{genre}');"
         dbCursor.execute(genreinsert)
     for index, review in enumerate(reviews):
