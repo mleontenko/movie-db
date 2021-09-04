@@ -1,15 +1,22 @@
 import requests
 import json
 import psycopg2
-from getcredits import get_credits
-from getgenres import get_genres
-from getreviews import get_reviews
+from src.getcredits import get_credits
+from src.getgenres import get_genres
+from src.getreviews import get_reviews
 import nltk
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 # sentiment analysis
 sid = SentimentIntensityAnalyzer()
+
+# DB parameters
+host="localhost"
+database="moviedb"
+user="root"
+password="root"
+port=6543
 
 response = requests.get("https://api.themoviedb.org/3/movie/popular?api_key=67a6e1aeb9867e7d066045334c59e0a9&language=en-US&page=1")
 
@@ -44,11 +51,11 @@ with open('output.txt', 'w') as json_file:
 
 # spremanje u bazu podataka
 conn = psycopg2.connect(
-        host="localhost",
-        database="moviedb",
-        user="root",
-        password="root",
-        port=6543)
+        host=host,
+        database=database,
+        user=user,
+        password=password,
+        port=port)
 
 dbCursor = conn.cursor()
 
