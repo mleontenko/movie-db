@@ -39,17 +39,13 @@ for movie_fetched in movies_fetched["results"]:
     for review in movie['reviews']:
         score = sid.polarity_scores(review)
         movie['scores'].append(score["compound"])        
-    movies.append(movie) 
-
-#print(movies)
-
+    movies.append(movie)
 
 # ispis u txt datoteku
-with open('output.txt', 'w') as json_file:
-  json.dump(movies, json_file)
+#with open('output.txt', 'w') as json_file:
+#  json.dump(movies, json_file)
 
-
-# spremanje u bazu podataka
+# konekcija na bazu podataka
 conn = psycopg2.connect(
         host=host,
         database=database,
@@ -60,7 +56,6 @@ conn = psycopg2.connect(
 dbCursor = conn.cursor()
 
 for movie in movies:
-
     moviedb_id = movie["moviedb_id"]
     original_title =movie["original_title"]
     # escape za navodnik
@@ -75,24 +70,30 @@ for movie in movies:
     scores = movie["scores"]
 
     movieinsert = f"INSERT INTO public.movies(moviedb_id, original_title, release_date, director) VALUES ({moviedb_id}, '{original_title}', '{release_date}', '{director}') RETURNING id;"
-    #print(movieinsert)
     dbCursor.execute(movieinsert)
     movies_id = dbCursor.fetchone()[0]
     for actor in cast:
-        # escape za navodnik (dogodio se slucaj da glumac ima navodnik u imenu npr. Katy O'Brian)
-        actor_clean = actor.replace("'", "''")
-        actorinsert = f"INSERT INTO public.actors(movie_id, name) VALUES ({movies_id}, '{actor_clean}');"
-        dbCursor.execute(actorinsert)
+        try:
+            # escape za navodnik (dogodio se slucaj da glumac ima navodnik u imenu npr. Katy O'Brian)
+            actor_clean = actor.replace("'", "''")
+            actorinsert = f"INSERT INTO public.actors(movie_id, name) VALUES ({movies_id}, '{actor_clean}');"
+            dbCursor.execute(actorinsert)
+        except: 
+            print("Error while inserting actors...")
     for genre in genres:
-        # escape za navodnik
-        genre = genre.replace("'", "''")
-        genreinsert = f"INSERT INTO public.genres(movie_id, name) VALUES ({movies_id}, '{genre}');"
-        dbCursor.execute(genreinsert)
+        try:
+            genre = genre.replace("'", "''")
+            genreinsert = f"INSERT INTO public.genres(movie_id, name) VALUES ({movies_id}, '{genre}');"
+            dbCursor.execute(genreinsert)
+        except: 
+            print("Error while inserting genres...")
     for index, review in enumerate(reviews):
-        review = review.replace("'", "''")
-        reviewinsert = f"INSERT INTO public.reviews(movie_id, review, compound) VALUES ({movies_id}, '{review}', '{scores[index]}');"
-        dbCursor.execute(reviewinsert)        
-    #print(movies_id)
+        try:
+            review = review.replace("'", "''")
+            reviewinsert = f"INSERT INTO public.reviews(movie_id, review, compound) VALUES ({movies_id}, '{review}', '{scores[index]}');"
+            dbCursor.execute(reviewinsert)
+        except: 
+            print("Error while inserting reviews...")
     conn.commit()
 
 conn.close()
