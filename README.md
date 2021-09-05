@@ -1,5 +1,16 @@
 ### Docker:
 
-App: https://hub.docker.com/r/mleontenko/movie-db
+Pokreni sve:
+```
+docker compose up
+```
 
-DB: https://hub.docker.com/r/mleontenko/pg_container_test
+Dohvati trenutno popularne (postgres mora biti pokrenut):
+```
+docker start movie-db
+```
+
+Očisti bazu:
+```
+docker compose down --volumes
+```
