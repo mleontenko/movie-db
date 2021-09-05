@@ -1,5 +1,29 @@
 version: '3.8'
-services:
+services:  
+  db:
+    container_name: pg_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: moviedb
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./database_scripts/2-movies.sql:/docker-entrypoint-initdb.d/2-movies.sql"
+      - "./database_scripts/3-actors.sql:/docker-entrypoint-initdb.d/3-actors.sql"
+      - "./database_scripts/4-genres.sql:/docker-entrypoint-initdb.d/4-genres.sql"
+      - "./database_scripts/5-reviews.sql:/docker-entrypoint-initdb.d/5-reviews.sql"
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
   app:
     container_name: movie-db
     build: .
@@ -8,22 +32,3 @@ services:
       - .:/code
     ports:
         - 8000:8000
-  db:
-    container_name: pg_container_test
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: test_db
-    ports:
-      - "5432:5432"
-  pgadmin:
-    container_name: pgadmin4_container_test
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
-    ports:
-      - "5050:80"

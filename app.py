@@ -12,7 +12,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 sid = SentimentIntensityAnalyzer()
 
 # DB parameters
-host="pg_container_test"
+host="pg_container"
 database="moviedb"
 user="root"
 password="root"
