@@ -10,7 +10,7 @@ Dohvati trenutno popularne (postgres mora biti pokrenut):
 docker start movie-db
 ```
 
-Očisti bazu:
+Compose down i očisti bazu:
 ```
 docker compose down --volumes
 ```
